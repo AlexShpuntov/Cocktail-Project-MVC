@@ -16,22 +16,5 @@ router.get('/signup', accountController.getSignUpUser);
 router.get('/login', accountController.getLoginUser);
 router.post('/signup', accountController.postingSignup);
 router.post('/login', accountController.postingLogin);
-// router.get('/:id', getRecipe, (req, res) => {
-//   res.render(res.data);
-// });
-
-// async function getRecipe(req, res, next) {
-//   let recipe;
-//   try {
-//     recipe = await CocktailRecipe.findById(req.params.id);
-//     if (recipe == null) {
-//       return res.status(404).json({ message: 'Recipe not found' });
-//     }
-//   } catch (err) {
-//     return res.status(500).json({ message: err.message });
-//   }
-//   res.recipe = recipe;
-//   next();
-// }
 
 module.exports = router;

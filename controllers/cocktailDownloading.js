@@ -50,8 +50,6 @@ exports.downloadCocktailsToDB = async function(req, res, next) {
   }
 };
 
-
-
 exports.listOfCocktails = async (req, res) => {
   const drinks = await CocktailRecipe.find({})
   res.json(drinks);
