@@ -22,15 +22,15 @@
   <h3>Browse drinks</h3>
   <div class="drinks">
     <% for (let i = 0; i < drinks.length; i++) { %>
-        <div class="drink" data-idDrink="<%= drinks[i].idDrink %>">
-            <img src="<%= drinks[i].imageUrl %>" alt="<%= drinks[i].name %>">
-            <h2><%= drinks[i].name %></h2>
+        <div class="drink" data-idDrink="<%= drinks[i]._id %>">
+          <img src="<%= drinks[i].imageUrl %>" alt="<%= drinks[i].name %>">
+          <h2><%= drinks[i].name %></h2>
         </div>
-        <% if ((i + 1) % 3 === 0) { %>
-            </div><div class="drinks">
+        <% if ((i + 1) % 3 === 0 && i !== drinks.length - 1) { %>
+          </div><div class="drinks">
         <% } %>
     <% } %>
-</div>
+  </div>
 </main>
 <script>
   document.addEventListener('DOMContentLoaded', function () {

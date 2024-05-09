@@ -10,9 +10,15 @@ exports.downloadCocktailsToDB = async function(req, res, next) {
         for (let i = 0; i < cocktailData.drinks.length; i++) {
           let cocktail = {
             name: cocktailData.drinks[i].strDrink,
+            imageUrl: `${cocktailData.drinks[i].strDrinkThumb}/preview`,
             ingredients: Object.keys(cocktailData.drinks[i])
               .filter(key => (key.startsWith('strIngredient') && cocktailData.drinks[i][key]))
-              .map(key => cocktailData.drinks[i][key])
+              .map((key, index) => ({
+                name: cocktailData.drinks[i][key],
+                imageUrl: `https://www.thecocktaildb.com/images/ingredients/${cocktailData.drinks[i][key]}.png`,
+                measurements: cocktailData.drinks[i][`strMeasure${index + 1}`]
+              })),
+              instructions: cocktailData.drinks[i].strInstructions
           };
           try {
             const result = await CocktailRecipe.insertMany(cocktail);
@@ -30,9 +36,15 @@ exports.downloadCocktailsToDB = async function(req, res, next) {
         for (let i = 0; i < cocktailData.drinks.length; i++) {
           let recipe = {
             name: cocktailData.drinks[i].strDrink,
+            imageUrl: `${cocktailData.drinks[i].strDrinkThumb}/preview`,
             ingredients: Object.keys(cocktailData.drinks[i])
               .filter(key => (key.startsWith('strIngredient') && cocktailData.drinks[i][key]))
-              .map(key => cocktailData.drinks[i][key])
+              .map((key, index) => ({
+                name: cocktailData.drinks[i][key],
+                imageUrl: `https://www.thecocktaildb.com/images/ingredients/${cocktailData.drinks[i][key]}.png`,
+                measurements: cocktailData.drinks[i][`strMeasure${index + 1}`]
+              })),
+              instructions: cocktailData.drinks[i].strInstructions
           };
           try {
             const result = await CocktailRecipe.create(recipe);

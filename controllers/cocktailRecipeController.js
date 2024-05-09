@@ -1,62 +1,48 @@
 const CocktailRecipe = require('../models/CocktailRecipe');
 const axios = require('axios');
 
-
 exports.getRandomDrinks = async (req, res) => {
   try {
-    const response = await Promise.all([
-      axios.get('https://www.thecocktaildb.com/api/json/v1/1/random.php'),
-      axios.get('https://www.thecocktaildb.com/api/json/v1/1/random.php'),
-      axios.get('https://www.thecocktaildb.com/api/json/v1/1/random.php'),
-      axios.get('https://www.thecocktaildb.com/api/json/v1/1/random.php'),
-      axios.get('https://www.thecocktaildb.com/api/json/v1/1/random.php'),
-      axios.get('https://www.thecocktaildb.com/api/json/v1/1/random.php')
-    ]);    
-    const drinks = response.map(response => ({
-      name: response.data.drinks[0].strDrink,
-      imageUrl: `${response.data.drinks[0].strDrinkThumb}/preview`
+    const promises = [];
+    for (let i = 0; i < 6; i++) {
+      promises.push(CocktailRecipe.aggregate([{ $sample: { size: 1 } }]));
+    }
+    const drinkResponse = await Promise.all(promises);
+    const drinks = drinkResponse.map(drink => ({
+      _id: drink[0]._id,
+      name: drink[0].name,
+      imageUrl: drink[0].imageUrl
     }));
-    randomDrinkData = response.map(response => response.data.drinks[0].idDrink);
-    res.render('main', { title: 'Cocktails', drinks, randomDrinkData });
+    res.render('main', { title: 'Cocktails', drinks });
   } catch (error) {
-    res.status(500).json({ message: 'Error getting random drink'})
+    res.status(500).json({ message: 'Error getting random drinks' });
   }
 };
 
 exports.getCocktailRecipeById = async (req, res) => {
   try {
-    const orderId = req.query.id;
-    const response = await axios.get(`https://www.thecocktaildb.com/api/json/v1/1/lookup.php?i=${orderId}`);
-    const drink = {
-      name: response.data.drinks[0].strDrink,
-      imageUrl: `${response.data.drinks[0].strDrinkThumb}/preview`,
-      ingredients: Object.keys(response.data.drinks[0])
-        .filter(key => key.startsWith('strIngredient') && response.data.drinks[0][key])
-        .map((key, index) => ({
-          name: response.data.drinks[0][key],
-          imageUrl: `https://www.thecocktaildb.com/images/ingredients/${response.data.drinks[0][key]}.png`,
-          measurements: response.data.drinks[0][`strMeasure${index + 1}`]
-        })),        
-      instructions: response.data.drinks[0].strInstructions
-    };
-    res.render('cocktail-information', { title: 'Cocktail', drink, editable: true });
+    const drinkId = req.query.id;
+    const drink = await CocktailRecipe.findById(drinkId);
+    const ingredients = drink.ingredients;
+    const instructions = drink.instructions;
+    res.render('cocktail-information', { title: 'Cocktail', drink, ingredients, instructions, editable: true });
   } catch (error) {
     res.status(500).json({ message: 'Error getting recipe for cocktail' });
   }
 };
 
-
 exports.searchCocktailByName = async (req, res) => {
-  const name = req.query.name;
   try {
-    const response = await axios.get(`https://www.thecocktaildb.com/api/json/v1/1/search.php?s=${name}`);
-    const drinks = response.data.drinks.map(drink => ({
-      name: drink.strDrink,
-      imageUrl: `${drink.strDrinkThumb}/preview`,
-      idDrink: drink.idDrink
-    }));
-    res.render('search-result', { title: 'Cocktails', drinks });
+    const cocktailName = req.query.name;
+    const regex = new RegExp(cocktailName, 'i');
+    const drinksData = await CocktailRecipe.find({ name: { $regex: regex } });
+    const drinks = drinksData.map(drink => ({
+      _id: drink._id,
+      name: drink.name,
+      imageUrl: drink.imageUrl
+    }));  
+    res.render('search-result', { title: 'Cocktail', drinks });
   } catch (error) {
-    res.status(500).json({ message: 'Error searching cocktails by name' });
+    res.status(500).json({ message: 'Error getting recipe for cocktail' });
   }
 };
