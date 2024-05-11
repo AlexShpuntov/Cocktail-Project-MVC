@@ -6,11 +6,29 @@
 
 body {
   height: 100vh;
-  display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #333;
+  color: #fff;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+h1 {
+  text-align: center;
+  margin-top: 20px;
+}
+
+#main-title {
+  cursor: pointer;
+  text-decoration: underline;
+}
 
 h2 {
   text-align: center;
@@ -19,33 +37,40 @@ h2 {
 
 .form-container {
   width: 300px;
-  margin: 0 auto;
+  margin: 20px auto;
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #555;
   border-radius: 5px;
+  background-color: #444;
 }
 
-.form-group {
+.form-container form {
   margin-bottom: 15px;
 }
 
-.form-group label {
+.form-container form label {
   display: block;
   font-weight: bold;
   margin-bottom: 5px;
 }
 
-.form-group input {
+.form-container form input {
+  margin-bottom: 15px;
   width: 100%;
   padding: 8px;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid #666;
   border-radius: 3px;
+  background-color: #555;
+  color: #fff;
 }
 
-.form-group span {
-  display: none; 
-  color: red;
+.error {
+  color: #ff8080;
+}
+
+.error-margin {
+  margin-bottom: 15px;
 }
 
 .submit-btn {
@@ -65,4 +90,12 @@ h2 {
 
 p {
   margin-top: 15px;
+}
+
+a {
+  color: #fff;
+}
+
+a:hover {
+  color: #ccc;
 }

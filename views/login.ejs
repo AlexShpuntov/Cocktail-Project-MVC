@@ -1,26 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-    <link rel="stylesheet" href="/css/login.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
+  <div class="container">
+    <%- include('partials/header-login'); -%>
     <div class="form-container">
-        <h2>Login</h2>
-        <form action="/login" method="post">
-          <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="username" placeholder="Enter your name" required autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label for="password">password:</label>
-            <input type="password" id="password" name="password" placeholder="password" required>
-          </div>
-          <button type="submit" class="submit-btn">Login</button>
-        </form>
-        <p>Don't have an account? <a class="link" href="/signup">SignUp</a></p>
+      <h2>Log In</h2>
+      <form id="signupForm" action="/signup" method="post">
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" placeholder="Email" required>
+        <div class="email error" id="emailError"></div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <div class="password error" id="passwordError"></div>
+        <button type="submit" class="submit-btn">Log In</button>
+      </form>
+      <p>Don't have an account? <a class="link" href="/signup">Sign Up</a></p>
     </div>
+  </div>
 </body>
+<script>
+  const emailError = document.getElementById('emailError');
+  const passwordError = document.getElementById('passwordError');
+  const form = document.querySelector('form');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    emailError.textContent = '';
+    passwordError.textContent = '';
+    try {
+      const response = await fetch('/login', { 
+        method: 'POST', 
+        body: JSON.stringify({
+          email: form.email.value, 
+          password: form.password.value
+        }),
+        headers: {'Content-Type': 'application/json'}
+      });
+      const data = await response.json();
+      if (data.errors) {
+        emailError.textContent = data.errors.email;
+        passwordError.textContent = data.errors.password;
+
+        emailError.classList.add('error-margin');
+        passwordError.classList.add('error-margin');
+      }
+      if (data.user) {
+        location.assign('/');
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const mainTitleSpan = document.getElementById('main-title');
+    mainTitleSpan.addEventListener('click', function (event) {
+      if (event.target === this) {
+        window.location.href = '/';
+      }
+    });
+  });
+</script>
 </html>

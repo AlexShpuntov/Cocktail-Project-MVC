@@ -1,61 +1,61 @@
-  <!DOCTYPE html>
-  <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= drink.name %></title>
-    <link rel="stylesheet" href="/css/cocktail-information.css">
-  </head>
-  <body>
-    <header>
-      <button class="back-container">
-        <span id="main"><img src="/images/back-icon.svg"></span>
-      </button>
-      <h1><%= drink.name %></h1>
-    </header>
-    <main>
-      <div class="drink-info">
-        <div class="drink-image">
-            <img src="<%= drink.imageUrl %>" alt="<%= drink.name %>">
-        </div>
-        <div class="drink-details">
-          <h2>Ingredients:</h2>
-          <ul>
-            <% drink.ingredients.forEach((ingredient) => { %>
-              <li>
-                <img src="<%= ingredient.imageUrl %>" alt="<%= ingredient.name %>">
-                <div class="ingredient-info">
-                  <div class="ingredient-name"><%= ingredient.name %></div>
-                  <div class="ingredient-measurements"><%= ingredient.measurements %></div>
-                </div>
-              </li>
-            <% }); %>
-          </ul>
-          <div class="instruction-row">
-            <h2>Instructions:</h2>
-            <% if (editable) { %>
-              <div class="edit-button">
-                <button onclick="confirmEdit()">Edit Recipe</button>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= drink.name %></title>
+  <link rel="stylesheet" href="/css/cocktail-information.css">
+</head>
+<body>
+  <header>
+    <button class="back-container">
+      <span id="main"><img src="/images/back-icon.svg"></span>
+    </button>
+    <h1><%= drink.name %></h1>
+  </header>
+  <main>
+    <div class="drink-info">
+      <div class="drink-image">
+        <img src="<%= drink.imageUrl %>" alt="<%= drink.name %>">
+      </div>
+      <div class="drink-details">
+        <h2>Ingredients:</h2>
+        <ul>
+          <% drink.ingredients.forEach((ingredient) => { %>
+            <li>
+              <img src="<%= ingredient.imageUrl %>" alt="<%= ingredient.name %>">
+              <div class="ingredient-info">
+                <div class="ingredient-name"><%= ingredient.name %></div>
+                <div class="ingredient-measurements"><%= ingredient.measurements %></div>
               </div>
-            <% } %>
-          </div>
-          <div class="recipe">
-            <p><%= drink.instructions %></p>
-          </div>
+            </li>
+          <% }); %>
+        </ul>
+        <div class="instruction-row">
+          <h2>Instructions:</h2>
+          <% if (editable) { %>
+            <div class="edit-button">
+              <button onclick="confirmEdit()">Edit Recipe</button>
+            </div>
+          <% } %>
+        </div>
+        <div class="recipe">
+          <p><%= drink.instructions %></p>
         </div>
       </div>
-    </main>
-    <script>
-        function confirmEdit() {
-            if (confirm("Are you sure you want to edit this recipe?")) {
-                window.location.href = "/drinks/<%= drink.id %>/edit";
-            }
-        }
-    </script>
-    <script>
-      document.getElementById("main").addEventListener("click", function() {
-          window.location.href = "/";
-      });
-    </script> 
-  </body>
-  </html>
+    </div>
+  </main>
+  <script>
+    function confirmEdit() {
+      if (confirm("Are you sure you want to edit this recipe?")) {
+          window.location.href = "/drinks/<%= drink.id %>/edit";
+      }
+    }
+  </script>
+  <script>
+    document.getElementById("main").addEventListener("click", function() {
+      window.location.href = "/";
+    });
+  </script> 
+</body>
+</html>

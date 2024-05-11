@@ -1,58 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sign Up</title>
-    <link rel="stylesheet" href="/css/login.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up</title>
+  <link rel="stylesheet" href="/css/login.css">
 </head>
 <body>
+  <div class="container">
+    <%- include('partials/header-login'); -%>
     <div class="form-container">
-        <h2>SignUp</h2>
-        <form id="signupForm" action="/signup" method="post">
-          <div class="form-group">
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" placeholder="Enter your name" required autocomplete="off">
-          </div>
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="Email" required>
-            <span id="emailError"></span>
-        </div>
-          <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Password" required>
-          </div>
-          <div class="form-group">
-            <label for="confirmPassword">Confirm Your Password:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm Password" required>
-          </div>
-          <button type="submit" class="submit-btn">Sign Up</button>
-        </form>
-        <p>Already have an account? <a href="/login">Login</a></p>
+      <h2>Sign Up</h2>
+      <form id="signupForm" action="/signup" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name">
+        <div class="name error" id="nameError"></div>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" placeholder="Email" required>
+        <div class="email error" id="emailError"></div>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <div class="password error" id="passwordError"></div>
+        <button type="submit" class="submit-btn">Sign Up</button>
+      </form>
+      <p>Already have an account? <a href="/login">Log In</a></p>
     </div>
+  </div>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-document.getElementById("signupForm").addEventListener("submit", function(event) {
+  const nameError = document.getElementById('nameError');
+  const emailError = document.getElementById('emailError');
+  const passwordError = document.getElementById('passwordError');
+  const form = document.querySelector('form');
+  form.addEventListener('submit', async (event) => {
     event.preventDefault();
-    var formData = new FormData(document.getElementById("signupForm"));
-    axios.post('/signup', {
-        name: formData.get("name"),
-        email: formData.get("email"),
-        password: formData.get("password"),
-    })
-        .then(function (response) {
-            if (response.data.exists) {
-                document.getElementById("emailError").innerText = "User already exists";
-                document.getElementById("emailError").style.display = "block";
-            } else {
-                window.location.href = '/';
-            }
-        })
-        .catch(function (error) {
-            console.error('Error:', error);
-        });
-});
+    nameError.textContent = '';
+    emailError.textContent = '';
+    passwordError.textContent = '';
+    try {
+      const response = await fetch('/signup', { 
+        method: 'POST', 
+        body: JSON.stringify({
+          name: form.name.value,
+          email: form.email.value, 
+          password: form.password.value
+        }),
+        headers: {'Content-Type': 'application/json'}
+      });
+      const data = await response.json();
+      if (data.errors) {
+        nameError.textContent = data.errors.name;
+        emailError.textContent = data.errors.email;
+        passwordError.textContent = data.errors.password;
+
+        nameError.classList.add('error-margin');
+        emailError.classList.add('error-margin');
+        passwordError.classList.add('error-margin');
+      }
+      if (data.user) {
+        location.assign('/');
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const mainTitleSpan = document.getElementById('main-title');
+    mainTitleSpan.addEventListener('click', function (event) {
+      if (event.target === this) {
+        window.location.href = '/';
+      }
+    });
+  });
 </script>
 </html>
