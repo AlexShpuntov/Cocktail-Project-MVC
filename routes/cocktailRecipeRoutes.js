@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const CocktailRecipe = require('../models/CocktailRecipe');
 const { requireAuth, checkUser } = require('../middleware/authMiddleware');
 const recipeController = require('../controllers/cocktailRecipeController');
 const drinksController = require('../controllers/cocktailDownloading');
@@ -10,6 +9,8 @@ router.get('*', checkUser);
 router.get('/', recipeController.getRandomDrinks);
 router.get('/info-for-drink', requireAuth, recipeController.getCocktailRecipeById);
 router.get('/search', recipeController.searchCocktailByName);
+
+router.post('/info-for-drink', requireAuth, checkUser, recipeController.postingComment);
 
 router.get('/download-drinks', drinksController.downloadCocktailsToDB);
 router.get('/all', drinksController.listOfCocktails);

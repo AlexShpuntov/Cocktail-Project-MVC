@@ -12,6 +12,15 @@ const ingredientSchema = new mongoose.Schema({
   }
 });
 
+const commentsSchema = new mongoose.Schema({
+  commenter: {
+    type: String
+  },
+  text: {
+    type: String
+  }
+});
+
 const recipeSchema = new mongoose.Schema({
   name: {
     type: String
@@ -29,9 +38,9 @@ const recipeSchema = new mongoose.Schema({
   ratings: [{
     type: Number
   }],
-  comments: [{
-    type: String
-  }]
+  comments: {
+    type: [commentsSchema]
+  },
 });
 
 const CocktailRecipe = mongoose.model('Cocktail', recipeSchema);

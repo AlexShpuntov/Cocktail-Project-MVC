@@ -14,14 +14,14 @@
     <h1><%= drink.name %></h1>
   </header>
   <main>
-    <div class="drink-info">
+    <div class="drink-info" data-IdDrink="<%= drink._id %>">
       <div class="drink-image">
         <img src="<%= drink.imageUrl %>" alt="<%= drink.name %>">
       </div>
       <div class="drink-details">
         <h2>Ingredients:</h2>
         <ul>
-          <% drink.ingredients.forEach((ingredient) => { %>
+          <% ingredients.forEach((ingredient) => { %>
             <li>
               <img src="<%= ingredient.imageUrl %>" alt="<%= ingredient.name %>">
               <div class="ingredient-info">
@@ -42,15 +42,47 @@
         <div class="recipe">
           <p><%= drink.instructions %></p>
         </div>
+        <div class="comment-form">
+          <h2>Add a Comment</h2>
+          <form class="form-action" action="/info-for-drink" method="post">
+            <textarea id="comment-area" name="comment" placeholder="Enter your comment" rows="4" required></textarea>
+            <button>Submit</button>
+          </form>
+        </div>
+        <% commentReviews.forEach((comment) => { %>
+          <div class="comment-box">
+            <h3><%= comment.commenter %> ></h3>
+            <p><%= comment.text %></p>
+        </div>
+        <% }); %>
       </div>
     </div>
   </main>
   <script>
+    document.getElementById("comment-form").addEventListener("submit", function(event) {
+      event.preventDefault();
+      fetch(`/info-for-drink`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+      })
+      .catch(error => {
+        console.error('There has been a problem with fetch operation:', error);
+      });
+    });
+  </script>
+  <script>
     function confirmEdit() {
       if (confirm("Are you sure you want to edit this recipe?")) {
-          window.location.href = "/drinks/<%= drink.id %>/edit";
+        window.location.href = "/drinks/<%= drink.id %>/edit";
       }
-    }
+    };
   </script>
   <script>
     document.getElementById("main").addEventListener("click", function() {

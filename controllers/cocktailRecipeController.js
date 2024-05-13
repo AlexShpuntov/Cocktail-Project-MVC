@@ -1,5 +1,8 @@
 const CocktailRecipe = require('../models/CocktailRecipe');
 const axios = require('axios');
+const UserAccounts = require('../models/UserAccount');
+
+let drinkId;
 
 exports.getRandomDrinks = async (req, res) => {
   try {
@@ -21,13 +24,30 @@ exports.getRandomDrinks = async (req, res) => {
 
 exports.getCocktailRecipeById = async (req, res) => {
   try {
-    const drinkId = req.query.id;
+    drinkId = req.query.id;
     const drink = await CocktailRecipe.findById(drinkId);
     const ingredients = drink.ingredients;
     const instructions = drink.instructions;
-    res.render('cocktail-information', { title: 'Cocktail', drink, ingredients, instructions, editable: true });
+    const commentReviews = drink.comments;
+    res.render('cocktail-information', { title: 'Cocktail', drink, ingredients, instructions, editable: true, commentReviews });
   } catch (error) {
     res.status(500).json({ message: 'Error getting recipe for cocktail' });
+  }
+};
+
+exports.postingComment = async (req, res) => {
+  try {
+    const text = req.body.comment;
+    const commenter = res.locals.user.name;
+    const recipe = await CocktailRecipe.findById(drinkId);
+    if (!recipe) {
+      return res.status(404).send('Recipe not found');
+    }
+    recipe.comments.push({ commenter, text });
+    await recipe.save();
+    res.status(201).redirect(`${req.originalUrl}?id=${drinkId}`);
+  } catch (error) {
+    res.status(500).send('Internal server error');
   }
 };
 

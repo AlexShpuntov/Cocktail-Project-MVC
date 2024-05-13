@@ -37,6 +37,6 @@ const checkUser = (req, res, next) => {
     res.locals.user = null;
     next();
   }
-}
+};
 
 module.exports = { requireAuth, checkUser };
