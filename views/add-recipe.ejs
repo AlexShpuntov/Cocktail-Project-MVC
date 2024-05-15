@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= edit ? 'Edit current cocktail recipe' : 'Add a cocktail recipe' %></title>
+  <link rel="stylesheet" href="/css/add-edit.css">
+</head>
+<body>
+  <header>
+    <h1><span id="main-title">Cocktails</span></h1>
+  </header>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="columns">
+          <h2><%= edit ? 'Edit Cocktail' : 'Add cocktail' %></h2>
+          <form method="POST" action="<%= edit ? '/edit' : '/add' %>">
+            <% if (edit) { %>
+              <input type="hidden" id="drinkId" value="<%= drink._id %>"/>
+            <% } %>
+            <p>
+              <label for="name">Cocktail name</label>
+              <input type="text" class="form-control" name="drinkName" value="<%= edit ? drink.name : '' %>" required/>
+            </p>
+            <p>
+              <label for="image">Image Url</label>
+              <input type="text" class="form-control" name="drinkImage" value="<%= edit ? drink.imageUrl : '' %>" required/>
+            </p>
+            <p id="ingredientContainer">
+              <label for="ingredients">Ingredients</label>
+              <% if (edit) { %>
+                <% drink.ingredients.forEach((ingredient) => { %>
+                  <p class="ingredient">
+                    <input type="text" placeholder="Ingredient name" class="form-control" name="ingredientName" value="<%= ingredient.name %>" required/>
+                    <input type="text" placeholder="Ingredient image Url" class="form-control" name="ingredientImage" value="<%= ingredient.imageUrl %>" required/>
+                    <input type="text" placeholder="Ingredient measurements" class="form-control" name="ingredientMeasurements" value="<%= ingredient.measurements %>"/>
+                  </p>
+                <% }); %>
+              <% } else { %>
+                <p class="ingredient">
+                  <input type="text" placeholder="Ingredient name" class="form-control" name="ingredientName" value="" required/>
+                  <input type="text" placeholder="Ingredient image Url" class="form-control" name="ingredientImage" value="" required/>
+                  <input type="text" placeholder="Ingredient measurements" class="form-control" name="ingredientMeasurements" value=""/>
+                </p>
+              <% } %>
+              </p>
+            <button class="addIngredient" id="addIngredient">Add one more ingredient</button>
+            <p>
+              <label for="instructions">Instructions</label>
+              <textarea name="instructions" id="instructions" class="form-control" required><%= edit ? drink.instructions : '' %></textarea>
+            </p>
+            <p>
+              <button id="add-edit"><%= edit ? 'Edit Cocktail' : 'Add Cocktail' %></button>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script>
+    document.getElementById('addIngredient').addEventListener('click', function(event) {
+      event.preventDefault();
+      var ingredientContainer = document.getElementById('ingredientContainer');
+      var newIngredient = document.createElement('p');
+      newIngredient.classList.add('ingredient');
+      newIngredient.innerHTML = `
+        <input type="text" placeholder="Type the name for ingredient" class="form-control" name="ingredientName" value="" required/>
+        <input type="text" placeholder="Type a url for ingredient" class="form-control" name="ingredientImage" value="" required/>
+        <input type="text" placeholder="What are the measurements for ingredient" class="form-control" name="ingredientMeasurements" value="" required/>
+      `;
+      ingredientContainer.appendChild(newIngredient);
+    });
+  </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const mainTitleSpan = document.getElementById('main-title');
+      mainTitleSpan.addEventListener('click', function (event) {
+        if (event.target === this) {
+          window.location.href = '/';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -33,11 +33,9 @@
         </ul>
         <div class="instruction-row">
           <h2>Instructions:</h2>
-          <% if (editable) { %>
-            <div class="edit-button">
-              <button onclick="confirmEdit()">Edit Recipe</button>
-            </div>
-          <% } %>
+          <div class="edit-button">
+            <button onclick="confirmEdit()">Edit Recipe</button>
+          </div>
         </div>
         <div class="recipe">
           <p><%= drink.instructions %></p>
@@ -80,7 +78,7 @@
   <script>
     function confirmEdit() {
       if (confirm("Are you sure you want to edit this recipe?")) {
-        window.location.href = "/drinks/<%= drink.id %>/edit";
+        window.location.href = "/edit";
       }
     };
   </script>
