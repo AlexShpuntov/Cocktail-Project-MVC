@@ -57,6 +57,40 @@ main {
   margin-right: 20px;
 }
 
+.add-rating {
+  display: flex;
+  justify-content: space-between;
+}
+
+.rating-wrapper {
+  display: flex;
+  flex-direction: row-reverse;
+  margin: 10px 0;
+}
+
+.rating-wrapper span {
+  cursor: pointer;
+  transition: color 0.2, transform 0.2s;
+  font-size: 30px;
+}
+
+.rating-wrapper span:hover {
+  color: orange;
+  transform: scale(1.3);
+}
+
+.rating-wrapper span:hover ~ span {
+  color: orange;
+}
+
+.rating-star.selected {
+  color: orange;
+}
+
+.rating-star.selected ~ span {
+  color: orange;
+}
+
 .drink-details {
   flex-grow: 1;
 }
@@ -124,7 +158,7 @@ main {
   margin-bottom: 20px;
 }
 
-.comment-box h2 {
+.comment-box h3 {
   font-size: 18px;
   margin-top: 0;
   margin-bottom: 5px;
@@ -133,6 +167,31 @@ main {
 .comment-box p {
   font-size: 16px;
   margin-top: 0;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0;
+}
+
+.comment-header h3 {
+  margin: 0;
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+}
+
+.star {
+  color: grey;
+  font-size: 20px;
+}
+
+.star.selected {
+  color: orange;
 }
 
 .comment-form {

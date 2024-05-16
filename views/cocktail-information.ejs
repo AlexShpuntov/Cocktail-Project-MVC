@@ -17,7 +17,12 @@
     <div class="drink-info" data-IdDrink="<%= drink._id %>">
       <div class="drink-image">
         <img src="<%= drink.imageUrl %>" alt="<%= drink.name %>">
-      </div>
+        <% if (drink.ratings && drink.ratings.length > 0) { %>
+          <p>Rating for the drink: <%= drink.ratings[0].toFixed(1) %></p>
+        <% } else { %>
+          <p>No ratings available</p>
+        <% } %>
+      </div>                 
       <div class="drink-details">
         <h2>Ingredients:</h2>
         <ul>
@@ -41,34 +46,76 @@
           <p><%= drink.instructions %></p>
         </div>
         <div class="comment-form">
-          <h2>Add a Comment</h2>
-          <form class="form-action" action="/info-for-drink" method="post">
+          <div class="add-rating">
+            <h2>Add a Comment</h2>
+            <div class="rating-wrapper">
+              <span class="rating-star" data-rating="5">&#9733</span>
+              <span class="rating-star" data-rating="4">&#9733</span>
+              <span class="rating-star" data-rating="3">&#9733</span>
+              <span class="rating-star" data-rating="2">&#9733</span>
+              <span class="rating-star" data-rating="1">&#9733</span>
+            </div>
+          </div>
+          <form class="form-action" id="comment-form" action="/info-for-drink" method="post">
             <textarea id="comment-area" name="comment" placeholder="Enter your comment" rows="4" required></textarea>
-            <button>Submit</button>
+            <input type="hidden" id="rating-input" name="rating">
+            <button type="submit">Submit</button>
           </form>
         </div>
         <% commentReviews.forEach((comment) => { %>
           <div class="comment-box">
-            <h3><%= comment.commenter %> ></h3>
+            <div class="comment-header">
+              <h3><%= comment.commenter %> ></h3>
+              <div class="rating-container">
+                <% for(let i = 1; i <= 5; i++) { %>
+                  <% if(i <= comment.rating) { %>
+                    <span class="star selected">&#9733;</span>
+                  <% } else { %>
+                    <span class="star">&#9733;</span>
+                  <% } %>
+                <% } %>
+              </div>
+            </div>
             <p><%= comment.text %></p>
-        </div>
+          </div>
         <% }); %>
       </div>
     </div>
   </main>
   <script>
+    document.querySelectorAll(".rating-star").forEach(function(star) {
+      star.addEventListener("click", function() {
+        const rating = parseInt(this.dataset.rating);
+        const stars = document.querySelectorAll(".rating-star");
+        stars.forEach(function(s) {
+          if (parseInt(s.dataset.rating) <= rating) {
+            s.classList.add("selected");
+          } else {
+            s.classList.remove("selected");
+          }
+        });
+        document.getElementById("rating-input").value = rating;
+      });
+    });
+  </script>
+  <script>
     document.getElementById("comment-form").addEventListener("submit", function(event) {
       event.preventDefault();
+      const comment = document.getElementById("comment-area").value;
+      const rating = document.getElementById("rating-input").value;
+      const drinkId = document.querySelector('.drink-info').dataset.iddrink;
       fetch(`/info-for-drink`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
-        }
+        },
+        body: JSON.stringify({ comment, rating })
       })
       .then(response => {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
+        window.location.href = `/info-for-drink?id=${drinkId}`;
       })
       .catch(error => {
         console.error('There has been a problem with fetch operation:', error);
@@ -86,6 +133,6 @@
     document.getElementById("main").addEventListener("click", function() {
       window.location.href = "/";
     });
-  </script> 
+  </script>
 </body>
 </html>

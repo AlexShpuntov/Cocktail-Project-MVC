@@ -37,14 +37,17 @@ exports.postingComment = async (req, res) => {
   try {
     const text = req.body.comment;
     const commenter = res.locals.user.name;
+    const rating = req.body.rating;
     const recipe = await CocktailRecipe.findById(drinkId);
     if (!recipe) {
       return res.status(404).send('Recipe not found');
     }
-    recipe.comments.push({ commenter, text });
+    recipe.comments.push({ commenter, text, rating });
     await recipe.save();
-    res.status(201).redirect(`${req.originalUrl}?id=${drinkId}`);
+    await recipe.calculateAverageRating();
+    res.status(201).json({ recipe });
   } catch (error) {
+    console.error(error);
     res.status(500).send('Internal server error');
   }
 };
