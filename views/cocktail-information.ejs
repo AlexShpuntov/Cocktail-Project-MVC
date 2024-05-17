@@ -14,15 +14,18 @@
     <h1><%= drink.name %></h1>
   </header>
   <main>
-    <div class="drink-info" data-IdDrink="<%= drink._id %>">
+    <div class="drink-info" data-idDrink="<%= drink._id %>">
       <div class="drink-image">
         <img src="<%= drink.imageUrl %>" alt="<%= drink.name %>">
-        <% if (drink.ratings && drink.ratings.length > 0) { %>
-          <p>Rating for the drink: <%= drink.ratings[0].toFixed(1) %></p>
-        <% } else { %>
-          <p>No ratings available</p>
-        <% } %>
-      </div>                 
+        <div class="drink-iamge-details">
+          <% if (drink.ratings && drink.ratings.length > 0) { %>
+            <p>Rating for the drink: <%= drink.ratings[0].toFixed(1) %></p>
+          <% } else { %>
+            <p>No ratings available</p>
+          <% } %>
+          <span class="favorite-icon <%= isFavorite ? 'selected' : '' %>" data-idDrink="<%= drink._id %>">&#x2661;</span>
+        </div>
+      </div>
       <div class="drink-details">
         <h2>Ingredients:</h2>
         <ul>
@@ -80,8 +83,38 @@
           </div>
         <% }); %>
       </div>
-    </div>
+    </div>    
   </main>
+  <script>
+    document.querySelectorAll('.favorite-icon').forEach(icon => {
+      icon.addEventListener('click', function() {
+        const drinkId = this.getAttribute('data-idDrink');
+        fetch('/toggle-favorite', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ drinkId })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            if (data.isFavorite) {
+              this.classList.add('selected');
+            } else {
+              this.classList.remove('selected');
+            }
+          } else {
+            alert('Error updating favorites');
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          alert('Error updating favorites');
+        });
+      });
+    });
+  </script>  
   <script>
     document.querySelectorAll(".rating-star").forEach(function(star) {
       star.addEventListener("click", function() {

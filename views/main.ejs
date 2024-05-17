@@ -28,6 +28,20 @@
                     <% } %>
                 <% } %>
             </div>
+            <% if (favoriteDrinks.length > 0) { %>
+                <h3>Your Favorite Drinks</h3>
+                <div class="drinks">
+                    <% for (let i = 0; i < favoriteDrinks.length; i++) { %>
+                        <div class="drink" data-idDrink="<%= favoriteDrinks[i]._id %>">
+                            <img src="<%= favoriteDrinks[i].imageUrl %>" alt="<%= favoriteDrinks[i].name %>">
+                            <h2><%= favoriteDrinks[i].name %></h2>
+                        </div>
+                        <% if ((i + 1) % 3 === 0 && i !== favoriteDrinks.length - 1) { %>
+                            </div><div class="drinks">
+                        <% } %>
+                    <% } %>
+                </div>
+            <% } %>
         </main>
     </div>
     

@@ -18,7 +18,8 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please enter a password'],
     minlength: [6, 'Minimum password length is 6 characters'],
-  }
+  },
+  favoriteCocktails: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Cocktail' }]
 });
 
 UserSchema.pre('save', async function (next) {
@@ -37,6 +38,13 @@ UserSchema.statics.login = async function(email, password) {
     throw Error('Incorrect password');
   }
   throw Error('Incorrect email');
+};
+
+UserSchema.methods.addToFavorites = async function(drinkId) {
+  if (!this.favoriteCocktails.includes(drinkId)) {
+    this.favoriteCocktails.push(drinkId);
+    await this.save();
+  }
 };
 
 const UserAccounts = mongoose.model('User', UserSchema);
