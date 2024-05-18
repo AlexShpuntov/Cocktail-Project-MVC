@@ -12,7 +12,7 @@ Cocktails - to aplikacja webowa, która umożliwia użytkownikom przeglądanie, 
 - Ocena koktajli przez użytkowników
 4) Instrukcje Obsługi:
 Instalacja:
-  - Sklonować repozytorium z GitHub: git clone [https://github.com/twoje-konto/cocktailify.git](https://github.com/AlexShpuntov/Cocktail-Project-MVC.git)
+  - Sklonować repozytorium z GitHub: git clone https://github.com/AlexShpuntov/Cocktail-Project-MVC.git
   - Przejśc do katalogu projektu: cd Cocktail-Project-MVC
   - Zainstalować wymagane paczki: npm install
 Uruchomienie Aplikacji:
